@@ -1,0 +1,22 @@
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+
+# User-specific files
+.Ruserdata
+.Rproj
+
+# Compiled junk
+*.o
+*.so
+*.DS_Store
+.Rproj.user
+.Rproj
+inst/
+misc/
+^tidydelta\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
