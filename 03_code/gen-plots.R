@@ -2,8 +2,9 @@
 ##                     Proyecto: Logo plots                     ##
 ##################################################################
 ##
-## Descipción:     
-##                 
+## Descipción:     This script generates the plots used to create 
+##                 the 40th-anniversary logo for UBC’s Department 
+##                 of Statistics.
 ##
 ## Author:         Javier Mtz.-Rdz.  
 ##
@@ -33,3 +34,22 @@ Sys.setlocale("LC_ALL", "es_ES.UTF-8")
 
 ## Disable scientific notation ----
 options(scipen = 999)
+
+
+# Bars on 0 ----------
+bars <- tibble(x = seq(0,5-0.5, 0.5),
+               y = dexp(seq(0,5-0.5, 0.5), 0.4))
+
+bars %>% 
+  ggplot(aes(x = x, 
+             y = y)) +
+  geom_col(fill = "#041F3F") 
+
+walk(c("png", "svg"),
+     ~ggsave(paste0("02_figs/bars.",
+                    .),
+             bg = "transparent",
+             width = 120,
+             height = 120,
+             units = "mm",
+             dpi = 500))
