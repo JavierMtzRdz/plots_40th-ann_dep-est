@@ -234,8 +234,7 @@ don %>%
   # sample_n(1000) %>% 
   ggplot(aes(x=BPcum, y=log10(P))) +
   geom_point(aes(color=as.factor(CHR)), 
-             alpha=.8, size=0.5,
-             stroke = 0) +
+             alpha=.8, size=0.5,stroke = 0) +
   scale_color_manual(values = rep(c("#335887",
                                     "#072D5C"), 22),
                      guide = "none") +
@@ -247,6 +246,66 @@ don %>%
 
 walk(c("png", "svg"),
      ~ggsave(paste0("02_figs/sky.",
+                    .),
+             bg = "transparent",
+             width = 100,                 # Ancho de la gráfica
+             height = 100,
+             units = "mm",
+             dpi = 500))
+
+# Markov Chain -----
+pacman::p_load(ggnetwork,
+               sna)
+
+devtools::install_github("teunbrand/ggarrow",
+                         force = TRUE)
+pacman::p_load(ggarrow)
+
+
+n <- network(rgraph(3, tprob = 0.60),
+             directed = FALSE) %>% 
+  ggnetwork(arrow.gap = 0.2)
+
+dot1 <- c(0.0000000,   1.0000000)
+dot2 <- c(0.6000000,   0.8000000)
+dot3 <- c(0.9000000,   0.0000000)
+anx_sep <- c(0.2, 0.2)
+tribble(
+         ~x,          ~y,       ~xend,       ~yend,      ~name_to,
+     dot1[1],    dot1[2],      dot2[1]-0.12,    dot2[2]-0.03,    "1-2",
+     dot2[1],    dot2[2],      dot1[1]+0.12,    dot1[2]+0.03,    "2-1",
+     dot3[1],    dot3[2],      dot2[1]+0.09,    dot2[2]-0.1,    "3-2",
+     dot2[1],    dot2[2],      dot3[1]-0.12,    dot3[2]+0.05,    "2-3",
+     dot2[1],    dot2[2],      dot2[1],    dot2[2]+0.001,    "2-2"
+) %>% 
+ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_arrow_curve(color = "grey50", size = 2,
+             curvature = 0.5,
+             arrow_head = arrow_head_wings(offset = 30, 
+                                           inset = 50),
+             length = 4) +
+  geom_arrow_curve(aes(x = dot2[1]+0.02, y = dot2[2], 
+                       xend = dot2[1]-0.01, yend = dot2[2]+.15),
+                   color = "grey50", size = 2,
+                   angle = 90,
+                   curvature = 4.5,
+                   arrow_head = arrow_head_wings(offset = 30, 
+                                                 inset = 50),
+                   length = 5) +
+  geom_arrow_curve(aes(x = dot3[1]+0.02, y = dot3[2], 
+                       xend = dot3[1]-0.01, yend = dot3[2]-.15),
+                   color = "grey50", size = 2,
+                   curvature = -5,
+                   angle = -90,
+                   arrow_head = arrow_head_wings(offset = 30, 
+                                                 inset = 50),
+                   length = 5) +
+  geom_point(color = "#041F3F", size = 20) +
+  scale_x_continuous(expand = c(0.2, 0.2)) + 
+  scale_y_continuous(expand = c(0.2, 0.2)) 
+
+walk(c("png", "svg"),
+     ~ggsave(paste0("02_figs/mc-sd.",
                     .),
              bg = "transparent",
              width = 100,                 # Ancho de la gráfica
