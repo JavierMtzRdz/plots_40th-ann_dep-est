@@ -19,7 +19,7 @@
 # Setup ----
 ## Packages to use ----
 pacman::p_load(tidyverse, janitor, writexl, 
-               readxl, scales)
+               readxl, scales, qqman)
 
 ## Set theme ------
 theme_set(theme_void())
@@ -220,3 +220,37 @@ walk(c("png", "svg"),
              height = 100,
              units = "mm",
              dpi = 500))
+
+# Manhattan plot - sky
+don <- gwasResults %>% 
+  group_by(CHR) %>% 
+  summarise(chr_len=max(BP)) %>% 
+  mutate(tot=cumsum(chr_len)-chr_len) %>%
+  left_join(gwasResults, ., by=c("CHR"="CHR")) %>%
+  arrange(CHR, BP) %>%
+  mutate( BPcum=BP+tot)
+
+don %>% 
+  # sample_n(1000) %>% 
+  ggplot(aes(x=BPcum, y=log10(P))) +
+  geom_point(aes(color=as.factor(CHR)), 
+             alpha=.8, size=0.5,
+             stroke = 0) +
+  scale_color_manual(values = rep(c("#335887",
+                                    "#072D5C"), 22),
+                     guide = "none") +
+  coord_radial(start = -2.05,
+               end = 2.05) +
+  scale_x_continuous(expand = c(0, 0)) + 
+  scale_y_continuous(expand = c(0, 0)) + 
+  theme_void()
+
+walk(c("png", "svg"),
+     ~ggsave(paste0("02_figs/sky.",
+                    .),
+             bg = "transparent",
+             width = 100,                 # Ancho de la gráfica
+             height = 100,
+             units = "mm",
+             dpi = 500))
+
