@@ -19,7 +19,8 @@
 # Setup ----
 ## Packages to use ----
 pacman::p_load(tidyverse, janitor, writexl, 
-               readxl, scales, qqman)
+               readxl, scales, qqman, arm,
+               ggarrow)
 
 ## Set theme ------
 theme_set(theme_void())
@@ -254,13 +255,6 @@ walk(c("png", "svg"),
              dpi = 500))
 
 # Markov Chain -----
-pacman::p_load(ggnetwork,
-               sna)
-
-devtools::install_github("teunbrand/ggarrow",
-                         force = TRUE)
-pacman::p_load(ggarrow)
-
 
 n <- network(rgraph(3, tprob = 0.60),
              directed = FALSE) %>% 
@@ -306,6 +300,58 @@ ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
 
 walk(c("png", "svg"),
      ~ggsave(paste0("02_figs/mc-sd.",
+                    .),
+             bg = "transparent",
+             width = 100,                 # Ancho de la gráfica
+             height = 100,
+             units = "mm",
+             dpi = 500))
+
+# Lines -----
+n <- 20
+subject <- seq(1:n)
+time <- 0:10
+cat <- rbinom(n, 1, .5)
+grid <- data.frame(expand.grid(subject = subject, time= time))
+groupIntercept <- 50
+sdIntercept <- 10
+grouptimeBeta <- 4
+sdtimeBeta <- 2
+withinSd <- 1
+
+multi <- data.frame(cbind(subject, cat)) %>%
+  left_join(., grid, by = 'subject')
+
+multi_subs <- multi %>% 
+  group_by(subject) %>%
+  summarise(subIntercept = rnorm(1, groupIntercept, sdIntercept), 
+            subSlope = rnorm(1, grouptimeBeta, sdtimeBeta))
+
+multi <- left_join(multi, multi_subs)%>% 
+  mutate(happy = subIntercept + time*subSlope  + 
+           rnorm(nrow(multi), 0, withinSd) + rnorm(nrow(multi), cat*20, 5),
+         bin = invlogit((happy-rnorm(nrow(multi), 100, 30))/100),
+         boughtIceCream = ifelse(bin > .5, 1, 0),
+         cat = as.factor(cat))
+
+ggplot(multi, 
+       aes(x = time, y = happy, 
+           color = cat)) +
+  geom_point(alpha=0.8, size=2.4,
+             stroke = 0) +
+  geom_line(aes(group = subject),
+            linewidth = 1.2,
+            alpha = 0.8) +
+  scale_x_continuous(breaks = 0:10,
+                     expand = c(0, 0)) +
+  scale_y_continuous(expand = expansion(mult = c(1, 0.))) + 
+  scale_color_manual(values = c("#7A90A2",
+                                "#072D5C"),
+                     guide = "none") +
+  theme_void() 
+
+walk(c("png", "svg"),
+     ~ggsave(paste0("02_figs/lines.",
                     .),
              bg = "transparent",
              width = 100,                 # Ancho de la gráfica
