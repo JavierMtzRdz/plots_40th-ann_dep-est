@@ -26,4 +26,4 @@ research areas in the department. Together, these elements depict the
 view from UBC to the Coast Mountains, where the area plot at the bottom
 represents the mountains and the other elements represent the sky. It’s
 worth noting All the plots were created using R and the codes are
-available here
+available here.
