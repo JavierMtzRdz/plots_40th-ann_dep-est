@@ -1,8 +1,8 @@
 ##################################################################
-##                     Proyecto: Logo plots                     ##
+##                     Project: Logo plots                      ##
 ##################################################################
 ##
-## Descipción:     This script generates the plots used to create 
+## Description:    This script generates the plots used to create 
 ##                 the 40th-anniversary logo for UBC’s Department 
 ##                 of Statistics.
 ##
