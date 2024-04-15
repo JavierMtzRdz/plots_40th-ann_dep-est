@@ -1,15 +1,18 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# plots_40th-ann_dep-est
+# plots_40th-ann_dep-st
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-This repository contains the plots used to create the 40th-anniversary
-logo for UBC’s Department of Statistics.
+This repository contains the plots used to create the proposed
+40th-anniversary logo for [UBC Statistics Logo Design Contest
+2024](https://www.stat.ubc.ca/ubc-statistics-logo-design-contest-2024).
 
 ![](02_figs/final-logo/logo-40-a-DS_h-res_br.png)
+
+## Art Statement
 
 This logo has been designed to represent the main research areas of the
 Department of Statistics. The state diagram of a Markov chain located on
